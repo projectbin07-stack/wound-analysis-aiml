@@ -24,9 +24,27 @@ AI-powered wound analysis system using deep learning for segmentation, tissue an
 
 ---
 
-### Dashboard
+## 📊 Dashboard
 
 ![Dashboard](assets/images/dashboard.png)
+
+---
+
+## 🧪 Results
+
+### Sample 1
+
+| Analysis Graph | Segmentation Result |
+|---------------|-------------------|
+| ![](assets/images/1st-graph.png) | ![](assets/images/1st-test.png) |
+
+---
+
+### Sample 2
+
+| Analysis Graph | Segmentation Result |
+|---------------|-------------------|
+| ![](assets/images/2nd-graph.png) | ![](assets/images/2nd-test.png) |
 
 ---
 
