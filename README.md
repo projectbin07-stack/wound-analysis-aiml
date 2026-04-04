@@ -6,59 +6,85 @@ AI-powered wound analysis system using deep learning for segmentation, tissue an
 
 ## 🚀 Features
 
-- 🔍 Wound segmentation using deep learning
-- 📊 Tissue analysis (area, redness, compactness)
-- ⚠️ Risk scoring and severity classification
-- 🧠 AI-generated human-friendly explanation
-- 🌐 Web-based dashboard interface
+- 🔍 **Automated Segmentation**: High-precision wound boundary detection using PyTorch.
+- 📊 **Tissue Analysis**: Real-time extraction of metrics (Area, Redness, Compactness).
+- ⚠️ **Risk Scoring**: Multi-factor clinical risk assessment and severity classification.
+- 🧠 **AI Explanation**: Local LLM integration (Ollama) providing human-friendly reports.
+- 🌐 **Web Dashboard**: Modern, responsive dark-themed interface for clinical use.
 
 ---
 
-## 📊 Results
-
-### Segmentation Output
-
-| Original | Mask | Overlay |
-|---------|------|--------|
-| ![](assets/images/original.png) | ![](assets/images/mask.png) | ![](assets/images/overlay.png) |
-
----
-
-## 📊 Dashboard
+## 📊 Dashboard Preview
 
 ![Dashboard](assets/images/dashboard.png)
 
 ---
 
-## 🧪 Results
+## 🔍 Segmentation Visualization
 
-### Sample 1
+| Original | Mask | Overlay |
+|---------|------|--------|
+| ![Original](assets/images/original.png) | ![Mask](assets/images/mask.png) | ![Overlay](assets/images/overlay.png) |
 
-| Analysis Graph | Segmentation Result |
+---
+
+## 📈 Model Performance
+
+| Accuracy Profile | Convergence Loss |
 |---------------|-------------------|
-| ![](assets/images/1st-graph.png) | ![](assets/images/1st-test.png) |
+| ![Graph 1](assets/images/1st-graph.png) | ![Graph 2](assets/images/2nd-graph.png) |
 
 ---
 
-### Sample 2
+## 🛠️ Tech Stack
 
-| Analysis Graph | Segmentation Result |
-|---------------|-------------------|
-| ![](assets/images/2nd-graph.png) | ![](assets/images/2nd-test.png) |
-
----
-
-## 🧠 Model Details
-
-- Framework: PyTorch  
-- Task: Image Segmentation  
-- Training Data: 1500 images  
-- Testing Data: 500 images  
+- **Backend**: Python, FastAPI, PyTorch, OpenCV
+- **Frontend**: HTML5, CSS3 (Modern Dark Theme), JavaScript
+- **Charts**: Chart.js
+- **LLM**: Ollama (llama3)
 
 ---
 
-## ⚙️ How to Run
+## 📁 Project Structure
 
-```bash
-pip install -r requirements.txt
-python app.py
+```text
+project_root/
+├── app.py              # FastAPI Backend Entry
+├── core/
+│   ├── inference.py    # AI Model Inference Pipeline
+│   └── analysis.py     # Metrics & AI Report Logic
+├── models/
+│   └── best_model.pth  # Model Weights
+├── static/             # Web Assets (CSS/JS)
+├── templates/          # HTML UI
+├── assets/             # Documentation Screenshots
+├── requirements.txt    # Python Dependencies
+└── README.md           # Product Documentation
+```
+
+---
+
+## ⚙️ Setup & Installation
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/projectbin07-stack/wound-analysis-aiml.git
+   cd wound-analysis-aiml
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Model Weights**:
+   Ensure `best_model.pth` is in the `models/` directory.
+
+4. **Run the Application**:
+   ```bash
+   python app.py
+   ```
+   Open **http://127.0.0.1:8001** in your browser.
+
+---
+*Disclaimer: This tool is for research and demonstration. Always consult a healthcare professional for clinical diagnosis.*
