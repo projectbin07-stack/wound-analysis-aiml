@@ -1,38 +1,64 @@
+# 🧠 AI-Based Wound Intelligence & Risk Assessment System
+
+AI-powered wound analysis system using deep learning for segmentation, tissue analysis, and risk assessment.
+
+---
+
+## 🚀 Features
+
+- 🔍 Wound segmentation using deep learning
+- 📊 Tissue analysis (area, redness, compactness)
+- ⚠️ Risk scoring and severity classification
+- 🧠 AI-generated human-friendly explanation
+- 🌐 Web-based dashboard interface
+
+---
+
+## 📊 Results
+
+### Segmentation Output
+
+| Original | Mask | Overlay |
+|---------|------|--------|
+| ![](assets/images/original.png) | ![](assets/images/mask.png) | ![](assets/images/overlay.png) |
+
+---
+
 ## 📊 Dashboard
 
 ![Dashboard](assets/images/dashboard.png)
 
 ---
 
-## 🧪 Wound Analysis Results
+## 🧪 Results
 
 ### Sample 1
 
-| Model Output | Wound Segmentation |
-|-------------|------------------|
+| Analysis Graph | Segmentation Result |
+|---------------|-------------------|
 | ![](assets/images/1st-graph.png) | ![](assets/images/1st-test.png) |
 
 ---
 
 ### Sample 2
 
-| Model Output | Wound Segmentation |
-|-------------|------------------|
+| Analysis Graph | Segmentation Result |
+|---------------|-------------------|
 | ![](assets/images/2nd-graph.png) | ![](assets/images/2nd-test.png) |
 
 ---
 
-## 🧠 What This Model Does
+## 🧠 Model Details
 
-- Detects wound region using deep learning segmentation  
-- Analyzes tissue characteristics (area, redness, irregularity)  
-- Computes risk score and severity  
-- Generates human-readable explanation  
+- Framework: PyTorch  
+- Task: Image Segmentation  
+- Training Data: 1500 images  
+- Testing Data: 500 images  
 
 ---
 
-## 📈 Model Performance
+## ⚙️ How to Run
 
-- Trained on: **1500 images**
-- Tested on: **500 images**
-- Task: **Wound Segmentation + Risk Assessment**
+```bash
+pip install -r requirements.txt
+python app.py
