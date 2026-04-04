@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wound Intelligence Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>WOUND INTELLIGENCE DASHBOARD</h1>
+            <div class="header-actions">
+                <input type="file" id="imageInput" accept="image/*" hidden>
+                <button id="uploadBtn" class="btn primary">UPLOAD CLINICAL IMAGE</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="dashboard-grid">
+            <!-- LEFT COLUMN (60%) -->
+            <div class="column left">
+                <div class="card vision-card" id="dropZone">
+                    <div id="imagePlaceholder" class="placeholder">
+                        <div class="icon">📥</div>
+                        <p>DRAG & DROP OR CLICK TO UPLOAD</p>
+                    </div>
+                    <div id="visionViewport" class="viewport hidden">
+                        <canvas id="visionCanvas"></canvas>
+                    </div>
+                    <div id="visionControls" class="controls hidden">
+                        <div class="toggle-container">
+                            <button id="origBtn" class="toggle-btn active">ORIGINAL</button>
+                            <button id="maskBtn" class="toggle-btn">SEGMENTATION</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card explanation-card">
+                    <h3>📋 AI CLINICAL EXPLANATION</h3>
+                    <div id="explanationContent" class="content">
+                        Awaiting image analysis...
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN (40%) -->
+            <div class="column right">
+                <!-- Risk Card -->
+                <div class="card risk-card">
+                    <h3>RISK ASSESSMENT</h3>
+                    <div class="risk-main">
+                        <span id="riskValue">--%</span>
+                    </div>
+                    <div class="health-bar-container">
+                        <div id="healthBar" class="health-bar"></div>
+                    </div>
+                    <div class="risk-details">
+                        <p><strong>Severity:</strong> <span id="severityLabel">--</span></p>
+                        <p><strong>Infection Risk:</strong> <span id="infectionLabel">--</span></p>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="card metric-tile">
+                        <span class="label">WOUND AREA</span>
+                        <span id="metricArea" class="value red">-- px</span>
+                    </div>
+                    <div class="card metric-tile">
+                        <span class="label">HEALTHY %</span>
+                        <span id="metricHealth" class="value green">--%</span>
+                    </div>
+                    <div class="card metric-tile">
+                        <span class="label">CONFIDENCE</span>
+                        <span id="metricConf" class="value blue">--%</span>
+                    </div>
+                    <div class="card metric-tile">
+                        <span class="label">REDNESS INDEX</span>
+                        <span id="metricRed" class="value orange">--</span>
+                    </div>
+                </div>
+
+                <!-- Analysis Chart -->
+                <div class="card chart-card">
+                    <h3>METRIC NORMALIZATION</h3>
+                    <canvas id="metricsChart"></canvas>
+                </div>
+
+                <!-- Model Portfolio -->
+                <div class="performance-section">
+                    <h3>MODEL PERFORMANCE INSIGHTS</h3>
+                    <div class="card chart-card sm">
+                        <canvas id="accChart"></canvas>
+                    </div>
+                    <div class="card chart-card sm">
+                        <canvas id="lossChart"></canvas>
+                    </div>
+                    <div class="card chart-card sm cm-card">
+                        <canvas id="cmChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Analyzing Tissue Patterns...</p>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

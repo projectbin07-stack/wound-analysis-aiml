@@ -1,0 +1,9 @@
+torch
+torchvision
+opencv-python
+numpy
+albumentations
+PyQt5
+matplotlib
+requests
+segmentation-models-pytorch
