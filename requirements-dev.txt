@@ -2,7 +2,7 @@
 # post-processing and the API in fallback mode.
 fastapi>=0.115,<1.0
 python-multipart>=0.0.9
-jinja2>=3.1,<4.0
+jinja2>=3.1.6,<4.0
 requests>=2.32,<3.0
 numpy>=1.26,<3.0
 opencv-python-headless>=4.9,<5.0
