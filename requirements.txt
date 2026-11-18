@@ -1,9 +1,16 @@
-torch
-torchvision
-opencv-python
-numpy
-albumentations
-PyQt5
-matplotlib
-requests
-segmentation-models-pytorch
+# Web application
+fastapi>=0.115,<1.0
+uvicorn>=0.30,<1.0
+python-multipart>=0.0.9
+jinja2>=3.1,<4.0
+requests>=2.32,<3.0
+
+# Image processing
+numpy>=1.26,<3.0
+opencv-python-headless>=4.9,<5.0
+
+# Model inference (without these the app runs in the labelled heuristic fallback mode)
+torch>=2.2
+torchvision>=0.17
+albumentations>=1.4,<3.0
+segmentation-models-pytorch>=0.3.3,<1.0

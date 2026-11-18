@@ -8,3 +8,7 @@ uploads/
 *.log
 *.pth
 !models/best_model.pth
+
+.pytest_cache/
+.ruff_cache/
+venv/
