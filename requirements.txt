@@ -11,6 +11,6 @@ opencv-python-headless>=4.9,<5.0
 
 # Model inference (without these the app runs in the labelled heuristic fallback mode)
 torch>=2.2
-torchvision>=0.17
+torchvision>=0.29.2
 albumentations>=1.4,<3.0
 segmentation-models-pytorch>=0.3.3,<1.0
