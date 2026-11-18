@@ -1,0 +1,11 @@
+# Lightweight set used by CI: no PyTorch, so tests exercise the metrics, the
+# post-processing and the API in fallback mode.
+fastapi>=0.115,<1.0
+python-multipart>=0.0.9
+jinja2>=3.1,<4.0
+requests>=2.32,<3.0
+numpy>=1.26,<3.0
+opencv-python-headless>=4.9,<5.0
+httpx>=0.27
+pytest>=8.0
+ruff>=0.6
