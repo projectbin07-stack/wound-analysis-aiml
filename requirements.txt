@@ -7,7 +7,7 @@ requests>=2.32,<3.0
 
 # Image processing
 numpy>=1.26,<3.0
-opencv-python-headless>=4.9,<5.0
+opencv-python-headless>=4.9,<6.0
 
 # Model inference (without these the app runs in the labelled heuristic fallback mode)
 torch>=2.2
