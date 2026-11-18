@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wound Intelligence Dashboard</title>
     <link rel="stylesheet" href="/static/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7"></script>
 </head>
 <body>
     <header>
@@ -13,12 +13,14 @@
             <h1>WOUND INTELLIGENCE DASHBOARD</h1>
             <div class="header-actions">
                 <input type="file" id="imageInput" accept="image/*" hidden>
-                <button id="uploadBtn" class="btn primary">UPLOAD CLINICAL IMAGE</button>
+                <button id="uploadBtn" class="btn primary">UPLOAD IMAGE</button>
             </div>
         </div>
     </header>
 
     <main>
+        <div class="notice">Research prototype. Not a medical device. Outputs are not clinically validated and must not be used for diagnosis or treatment decisions.</div>
+        <div id="modeBanner" class="notice warn hidden"></div>
         <div class="dashboard-grid">
             <!-- LEFT COLUMN (60%) -->
             <div class="column left">
@@ -39,7 +41,7 @@
                 </div>
 
                 <div class="card explanation-card">
-                    <h3>📋 AI CLINICAL EXPLANATION</h3>
+                    <h3>AUTOMATED SUMMARY (NOT A DIAGNOSIS)</h3>
                     <div id="explanationContent" class="content">
                         Awaiting image analysis...
                     </div>
@@ -87,20 +89,6 @@
                 <div class="card chart-card">
                     <h3>METRIC NORMALIZATION</h3>
                     <canvas id="metricsChart"></canvas>
-                </div>
-
-                <!-- Model Portfolio -->
-                <div class="performance-section">
-                    <h3>MODEL PERFORMANCE INSIGHTS</h3>
-                    <div class="card chart-card sm">
-                        <canvas id="accChart"></canvas>
-                    </div>
-                    <div class="card chart-card sm">
-                        <canvas id="lossChart"></canvas>
-                    </div>
-                    <div class="card chart-card sm cm-card">
-                        <canvas id="cmChart"></canvas>
-                    </div>
                 </div>
             </div>
         </div>

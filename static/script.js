@@ -93,10 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('metricRed').textContent = data.metrics.redness;
 
         // AI Explanation
-        const formattedExp = data.explanation
-            .replace(/SUMMARY:/g, '<b>📋 SUMMARY:</b>')
-            .replace(/MEANING:/g, '<br><br><b>💡 MEANING:</b>')
-            .replace(/RECOMMENDATION:/g, '<br><br><b>✅ RECOMMENDATION:</b>');
+        // Escape first: the text may come from an LLM and must never be injected as HTML.
+        const escaped = String(data.explanation)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const formattedExp = escaped
+            .replace(/SUMMARY:/g, '<b>SUMMARY:</b>')
+            .replace(/MEANING:/g, '<br><br><b>MEANING:</b>')
+            .replace(/RECOMMENDATION:/g, '<br><br><b>RECOMMENDATION:</b>');
         document.getElementById('explanationContent').innerHTML = formattedExp;
 
         // Health Bar
@@ -104,6 +107,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const score = data.metrics.health_score;
         hb.style.width = `${score}%`;
         hb.style.backgroundColor = score > 70 ? '#10b981' : score > 40 ? '#f59e0b' : '#f87171';
+
+        // Tell the user which segmentation path produced this result
+        const banner = document.getElementById('modeBanner');
+        if (data.mode === 'model') {
+            banner.classList.add('hidden');
+        } else {
+            banner.textContent = 'Heuristic fallback: the trained model was not available, so this mask comes from a simple threshold, not from the neural network.';
+            banner.classList.remove('hidden');
+        }
 
         // Render Image
         renderVision(maskBtn.classList.contains('active'));
@@ -150,52 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }]
             },
             options: chartOptions('Metric Normalization', false)
-        });
-
-        // 2. Accuracy
-        charts.acc = new Chart(document.getElementById('accChart'), {
-            type: 'line',
-            data: {
-                labels: data.performance.epochs,
-                datasets: [{
-                    label: 'Validation Accuracy',
-                    data: data.performance.accuracy,
-                    borderColor: '#38bdf8',
-                    tension: 0.4
-                }]
-            },
-            options: chartOptions('Accuracy Evolution', true)
-        });
-
-        // 3. Loss
-        charts.loss = new Chart(document.getElementById('lossChart'), {
-            type: 'line',
-            data: {
-                labels: data.performance.epochs,
-                datasets: [{
-                    label: 'Training Loss',
-                    data: data.performance.loss,
-                    borderColor: '#f87171',
-                    tension: 0.4
-                }]
-            },
-            options: chartOptions('Model Convergence', true)
-        });
-
-        // 4. CM (Simplified Heatmap)
-        charts.cm = new Chart(document.getElementById('cmChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Correct (Wound)', 'Incorrect', 'Correct (Healthy)'],
-                datasets: [{
-                    data: [45, 10, 45],
-                    backgroundColor: ['#10b981', '#f87171', '#38bdf8']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false }, title: { display: true, text: 'Classification Accuracy', color: 'white' } }
-            }
         });
     }
 
