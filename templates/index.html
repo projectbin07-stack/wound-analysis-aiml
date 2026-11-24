@@ -52,7 +52,7 @@
             <div class="column right">
                 <!-- Risk Card -->
                 <div class="card risk-card">
-                    <h3>RISK ASSESSMENT</h3>
+                    <h3>HEURISTIC SCORE</h3>
                     <div class="risk-main">
                         <span id="riskValue">--%</span>
                     </div>
@@ -60,23 +60,23 @@
                         <div id="healthBar" class="health-bar"></div>
                     </div>
                     <div class="risk-details">
-                        <p><strong>Severity:</strong> <span id="severityLabel">--</span></p>
-                        <p><strong>Infection Risk:</strong> <span id="infectionLabel">--</span></p>
+                        <p><strong>Score band:</strong> <span id="severityLabel">--</span></p>
+                        <p><strong>Redness band:</strong> <span id="rednessBandLabel">--</span></p>
                     </div>
                 </div>
 
                 <!-- Metrics Grid -->
                 <div class="metrics-grid">
                     <div class="card metric-tile">
-                        <span class="label">WOUND AREA</span>
+                        <span class="label">MASK AREA</span>
                         <span id="metricArea" class="value red">-- px</span>
                     </div>
                     <div class="card metric-tile">
-                        <span class="label">HEALTHY %</span>
+                        <span class="label">OUTSIDE MASK %</span>
                         <span id="metricHealth" class="value green">--%</span>
                     </div>
                     <div class="card metric-tile">
-                        <span class="label">CONFIDENCE</span>
+                        <span class="label">MEAN MODEL PROBABILITY</span>
                         <span id="metricConf" class="value blue">--%</span>
                     </div>
                     <div class="card metric-tile">

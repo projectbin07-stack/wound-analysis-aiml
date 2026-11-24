@@ -82,15 +82,17 @@ document.addEventListener('DOMContentLoaded', () => {
         visionViewport.classList.remove('hidden');
         visionControls.classList.remove('hidden');
 
-        // Update Text
-        document.getElementById('riskValue').textContent = `${data.metrics.risk}%`;
-        document.getElementById('severityLabel').textContent = data.metrics.severity;
-        document.getElementById('infectionLabel').textContent = data.metrics.infection;
+        // Update Text. Without a trained model there is no score, band or confidence.
+        const m = data.metrics;
+        const na = 'n/a (no model)';
+        document.getElementById('riskValue').textContent = m.scored ? `${m.risk}%` : 'n/a';
+        document.getElementById('severityLabel').textContent = m.scored ? m.severity : na;
+        document.getElementById('rednessBandLabel').textContent = m.scored ? m.redness_band : na;
         
-        document.getElementById('metricArea').textContent = `${data.metrics.area} px`;
-        document.getElementById('metricHealth').textContent = `${data.metrics.healthy_pct}%`;
-        document.getElementById('metricConf').textContent = `${data.metrics.confidence}%`;
-        document.getElementById('metricRed').textContent = data.metrics.redness;
+        document.getElementById('metricArea').textContent = `${m.area} px`;
+        document.getElementById('metricHealth').textContent = m.scored ? `${m.healthy_pct}%` : na;
+        document.getElementById('metricConf').textContent = m.scored ? `${m.confidence}%` : na;
+        document.getElementById('metricRed').textContent = m.redness;
 
         // AI Explanation
         // Escape first: the text may come from an LLM and must never be injected as HTML.
@@ -99,12 +101,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const formattedExp = escaped
             .replace(/SUMMARY:/g, '<b>SUMMARY:</b>')
             .replace(/MEANING:/g, '<br><br><b>MEANING:</b>')
-            .replace(/RECOMMENDATION:/g, '<br><br><b>RECOMMENDATION:</b>');
+            .replace(/NOTE:/g, '<br><br><b>NOTE:</b>');
         document.getElementById('explanationContent').innerHTML = formattedExp;
 
         // Health Bar
         const hb = document.getElementById('healthBar');
-        const score = data.metrics.health_score;
+        const score = m.scored ? m.health_score : 0;
         hb.style.width = `${score}%`;
         hb.style.backgroundColor = score > 70 ? '#10b981' : score > 40 ? '#f59e0b' : '#f87171';
 
@@ -113,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.mode === 'model') {
             banner.classList.add('hidden');
         } else {
-            banner.textContent = 'Heuristic fallback: the trained model was not available, so this mask comes from a simple threshold, not from the neural network.';
+            banner.textContent = 'No model loaded: heuristic fallback. The outline comes from a simple brightness threshold, not from the neural network, and is not a wound detection. No score, band or confidence is reported.';
             banner.classList.remove('hidden');
         }
 
