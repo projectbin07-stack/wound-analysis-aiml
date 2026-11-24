@@ -31,10 +31,18 @@ def test_postprocess_respects_threshold_and_output_size():
 def test_heuristic_fallback_finds_dark_central_blob():
     bgr = np.full((200, 200, 3), 220, dtype=np.uint8)
     cv2.circle(bgr, (100, 100), 25, (30, 30, 120), -1)
-    mask, prob = heuristic_fallback(bgr)
+    mask = heuristic_fallback(bgr)
     assert mask[100, 100] == 1.0
     assert mask[5, 5] == 0.0
-    assert np.array_equal(mask, prob)
+
+
+def test_heuristic_fallback_outlines_nothing_on_a_featureless_image():
+    # Regression: v0.1.0 outlined a region in a plain grey image (Otsu splits anything).
+    flat = np.full((400, 400, 3), 128, dtype=np.uint8)
+    assert heuristic_fallback(flat).sum() == 0
+    paper = np.full((400, 400, 3), 200, dtype=np.uint8)
+    paper[150:250, 150:250] = 190  # faint shadow, grey-level std about 4 in the centre
+    assert heuristic_fallback(paper).sum() == 0
 
 
 def test_get_inference_reports_fallback_mode_without_model(tmp_path, monkeypatch):
@@ -47,6 +55,7 @@ def test_get_inference_reports_fallback_mode_without_model(tmp_path, monkeypatch
     result = get_inference(str(path))
     assert result is not None
     assert result.mode == MODE_FALLBACK
+    assert result.prob is None  # no model, so no probability map
     assert result.rgb.shape == (120, 160, 3)
     assert result.mask.shape == (120, 160)
 

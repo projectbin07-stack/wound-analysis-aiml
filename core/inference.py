@@ -6,7 +6,9 @@ Two execution modes exist and the caller is always told which one ran:
   ``models/best_model.pth``.
 * ``"fallback"`` - a classical Otsu-threshold heuristic used only when PyTorch
   or the weights are unavailable. It is NOT a trained model and its output
-  must not be interpreted as a segmentation prediction.
+  must not be interpreted as a segmentation prediction. It outlines the largest
+  dark region near the image centre, if the centre has enough contrast to have
+  one, and has no probability map: ``InferenceResult.prob`` is ``None``.
 """
 
 from __future__ import annotations
@@ -26,6 +28,9 @@ MODE_FALLBACK = "fallback"
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "models", "best_model.pth")
 IMAGE_SIZE = 384
 PROB_THRESHOLD = 0.3
+# Fallback only: below this grey-level standard deviation the image centre is treated
+# as featureless and no region is outlined (Otsu would otherwise split pure noise).
+MIN_FALLBACK_CONTRAST = 8.0
 
 TORCH_AVAILABLE = False
 try:
@@ -64,7 +69,7 @@ class InferenceResult(NamedTuple):
 
     rgb: np.ndarray  # HxWx3 uint8, RGB
     mask: np.ndarray  # HxW float32, values in {0, 1}
-    prob: np.ndarray  # HxW float32, values in [0, 1]
+    prob: np.ndarray | None  # HxW float32 in [0, 1]; None in fallback mode (no model)
     mode: str  # MODE_MODEL or MODE_FALLBACK
 
 
@@ -145,12 +150,13 @@ def _run_model(rgb: np.ndarray) -> tuple[np.ndarray, np.ndarray] | None:
     return mask, prob
 
 
-def heuristic_fallback(bgr: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def heuristic_fallback(bgr: np.ndarray) -> np.ndarray:
     """Classical (non-learned) stand-in used when the model is unavailable.
 
     Otsu-thresholds the central half of the image and keeps the largest dark
-    blob. The returned "probability" is the mask itself: there is no model
-    confidence in this mode.
+    blob. A low-contrast centre (grey-level standard deviation below
+    ``MIN_FALLBACK_CONTRAST``) gives an empty mask. Only a mask is returned: there
+    is no model, so there is no probability or confidence in this mode.
     """
     h_orig, w_orig = bgr.shape[:2]
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
@@ -162,7 +168,7 @@ def heuristic_fallback(bgr: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     x1, x2 = max(0, cx - roi_w // 2), min(w_orig, cx + roi_w // 2)
 
     roi = gray[y1:y2, x1:x2]
-    if roi.size:
+    if roi.size and float(roi.std()) >= MIN_FALLBACK_CONTRAST:
         _, thresh = cv2.threshold(roi, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
         thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
         cnts, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -172,8 +178,7 @@ def heuristic_fallback(bgr: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
             cv2.drawContours(solid, [largest], -1, 255, -1)
             mask[y1:y2, x1:x2] = solid
 
-    mask_f = (mask > 0).astype(np.float32)
-    return mask_f, mask_f.copy()
+    return (mask > 0).astype(np.float32)
 
 
 def get_inference(image_path: str) -> InferenceResult | None:
@@ -188,5 +193,4 @@ def get_inference(image_path: str) -> InferenceResult | None:
         mask, prob = result
         return InferenceResult(rgb, mask, prob, MODE_MODEL)
 
-    mask, prob = heuristic_fallback(original)
-    return InferenceResult(rgb, mask, prob, MODE_FALLBACK)
+    return InferenceResult(rgb, heuristic_fallback(original), None, MODE_FALLBACK)

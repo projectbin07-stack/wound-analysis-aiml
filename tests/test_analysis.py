@@ -5,7 +5,13 @@ import pytest
 import requests
 
 from core import analysis
-from core.analysis import calculate_metrics, clamp, generate_human_report, template_report
+from core.analysis import (
+    calculate_metrics,
+    clamp,
+    generate_human_report,
+    redness_band,
+    template_report,
+)
 
 
 def test_clamp():
@@ -78,3 +84,50 @@ def test_report_falls_back_to_template_when_ollama_is_down(monkeypatch, red_disc
     assert text == template_report(m)
     assert "not a diagnosis" in text
     assert text.startswith("SUMMARY:")
+
+
+def test_without_a_model_no_confidence_score_or_band_is_reported(red_disc):
+    # Regression: v0.1.0 used the fallback mask as its own "probability" and reported
+    # 100 % confidence plus a severity and an infection band.
+    img, mask = red_disc
+    m = calculate_metrics(img, mask, None)
+    assert m["scored"] is False
+    for key in ("confidence", "risk", "health_score", "severity", "redness_band", "healthy_pct"):
+        assert m[key] is None, key
+    assert "infection" not in m and "danger" not in m
+    # Plain measurements of the outline are still reported.
+    assert m["area"] == int(mask.sum())
+    assert m["redness"] == pytest.approx(180 / 41, abs=0.001)
+
+
+@pytest.mark.parametrize("grey", [40, 128, 220])
+def test_neutral_grey_region_is_in_the_low_redness_band(grey):
+    # Regression: v0.1.0 put any neutral grey region in the "Medium" infection band.
+    img = np.full((64, 64, 3), grey, dtype=np.uint8)
+    mask = np.zeros((64, 64), dtype=np.float32)
+    mask[16:48, 16:48] = 1
+    m = calculate_metrics(img, mask, mask)
+    assert m["norm"]["red"] == 0.0
+    assert m["redness_band"] == "Low"
+
+
+def test_redness_band_edges():
+    assert [redness_band(x) for x in (0.0, 0.4, 0.41, 0.7, 0.71)] == [
+        "Low",
+        "Low",
+        "Medium",
+        "Medium",
+        "High",
+    ]
+
+
+def test_reports_give_no_medical_directives(red_disc, monkeypatch):
+    img, mask = red_disc
+    monkeypatch.setattr(analysis.requests, "post", lambda *a, **k: pytest.fail("no LLM call"))
+    unscored = generate_human_report(calculate_metrics(img, mask, None))
+    assert "No trained model is loaded" in unscored
+    for text in (unscored, template_report(calculate_metrics(img, mask, mask))):
+        lowered = text.lower()
+        assert "not a diagnosis" in lowered
+        for phrase in ("consult", "recommend", "seek", "infection"):
+            assert phrase not in lowered
